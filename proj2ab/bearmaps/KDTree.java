@@ -17,17 +17,16 @@ public class KDTree implements PointSet {
 
     private KDTreeNode insert(KDTreeNode parent, KDTreeNode node, Point point) {
         if (node == null) return new KDTreeNode(point, parent.depth + 1);
+        if (point.equals(node.point))
+            return new KDTreeNode(point, parent.depth + 1);
+        
         if (node.getDepth() % 2 == 0) {
-            if (point.equals(node.point))
-                node = new KDTreeNode(point, parent.depth + 1);
-            else if (point.getX() < node.point.getX())
+            if (point.getX() < node.point.getX())
                 node.left = insert(node, node.left, point);
             else
                 node.right = insert(node, node.right, point);
         } else {
-            if (point.equals(node.point))
-                node = new KDTreeNode(point, parent.depth + 1);
-            else if (point.getY() < node.point.getY())
+            if (point.getY() < node.point.getY())
                 node.left = insert(node, node.left, point);
             else
                 node.right = insert(node, node.right, point);
