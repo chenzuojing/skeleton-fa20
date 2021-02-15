@@ -5,6 +5,18 @@ import java.util.List;
 public class KDTree implements PointSet {
     private KDTreeNode root;
 
+    private static final class KDTreeNode {
+        Point point;
+        KDTreeNode left;
+        KDTreeNode right;
+        int depth;
+
+        public KDTreeNode(Point p, int d) {
+            this.point = p;
+            this.depth = d;
+        }
+    }
+
     public KDTree(List<Point> points) {
         for (Point p : points)
             insert(p);
@@ -17,10 +29,12 @@ public class KDTree implements PointSet {
 
     private KDTreeNode insert(KDTreeNode parent, KDTreeNode node, Point point) {
         if (node == null) return new KDTreeNode(point, parent.depth + 1);
-        if (point.equals(node.point))
-            return new KDTreeNode(point, parent.depth + 1);
-        
-        if (node.getDepth() % 2 == 0) {
+        if (point.equals(node.point)) {
+            node.point = point;
+            return node;
+        }
+
+        if (node.depth % 2 == 0) {
             if (point.getX() < node.point.getX())
                 node.left = insert(node, node.left, point);
             else
@@ -42,8 +56,8 @@ public class KDTree implements PointSet {
     public static void main(String[] args) {
         Point p1 = new Point(2, 3); // constructs a Point with x = 1.1, y = 2.2
         Point p2 = new Point(4, 2);
-        Point p3 = new Point(4, 2);
-        Point p4 = new Point(4, 5);
+        Point p3 = new Point(4, 5);
+        Point p4 = new Point(4, 2);
         Point p5 = new Point(3, 3);
         Point p6 = new Point(1, 5);
         Point p7 = new Point(4, 4);
