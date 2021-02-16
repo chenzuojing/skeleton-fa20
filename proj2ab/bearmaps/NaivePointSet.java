@@ -1,5 +1,8 @@
 package bearmaps;
 
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.Stopwatch;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,17 +29,20 @@ public class NaivePointSet implements PointSet {
     }
 
     public static void main(String[] args) {
-        Point p1 = new Point(2, 3); // constructs a Point with x = 1.1, y = 2.2
-        Point p2 = new Point(4, 2);
-        Point p3 = new Point(4, 5);
-        Point p4 = new Point(4, 2);
-        Point p5 = new Point(3, 3);
-        Point p6 = new Point(1, 5);
-        Point p7 = new Point(4, 4);
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < 5000; i++) {
+            points.add(new Point(StdRandom.uniform() * 100, StdRandom.uniform() * 100));
+        }
+        NaivePointSet nn = new NaivePointSet(points);
 
-        NaivePointSet nn = new NaivePointSet(List.of(p1, p2, p3, p4, p5, p6, p7));
-        Point ret = nn.nearest(0.0, 7.0); // returns p2
+        Stopwatch time = new Stopwatch();
 
-        System.out.println(ret.toString());
+        for (int i = 1; i <= 100000; i++) {
+            double x = StdRandom.uniform() * 100;
+            double y = StdRandom.uniform() * 100;
+            Point na1 = nn.nearest(x, y);
+        }
+
+        System.out.println(time.elapsedTime());
     }
 }

@@ -1,10 +1,13 @@
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ArithmeticTest {
 
-    /** Performs a few arbitrary tests to see if the product method is
-     * correct */
+    /**
+     * Performs a few arbitrary tests to see if the product method is
+     * correct
+     */
     @Test
     public void testProduct() {
         /* assertEquals for comparison of ints takes two arguments:
@@ -18,7 +21,9 @@ public class ArithmeticTest {
         assertEquals(0, Arithmetic.product(0, -6));
     }
 
-    /** Performs a few arbitrary tests to see if the sum method is correct */
+    /**
+     * Performs a few arbitrary tests to see if the sum method is correct
+     */
     @Test
     public void testSum() {
 

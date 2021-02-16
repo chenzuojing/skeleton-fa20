@@ -1,10 +1,13 @@
 package bearmaps;
 
+import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.Stopwatch;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class KDTree implements PointSet {
     private Node root;
-    //private Node best;
 
     private static class Node {
         Point point;
@@ -20,7 +23,6 @@ public class KDTree implements PointSet {
     public KDTree(List<Point> points) {
         for (Point p : points)
             insert(p);
-        //best = root;
     }
 
     private void insert(Point point) {
@@ -51,7 +53,7 @@ public class KDTree implements PointSet {
 
     @Override
     public Point nearest(double x, double y) {
-        return nearestNaive(root, new Point(x, y), root).point;
+        return nearest(root, new Point(x, y), root).point;
     }
 
     private Node nearestNaive(Node node, Point goal, Node best) {
@@ -64,19 +66,51 @@ public class KDTree implements PointSet {
         return best;
     }
 
+    private Node nearest(Node node, Point goal, Node best) {
+        if (node == null)
+            return best;
+        if (Point.distance(node.point, goal) < Point.distance(best.point, goal))
+            best = node;
+
+        Node good = node.left, bad = node.right;
+        boolean badPossible = true;
+        if (node.depth % 2 == 0) {
+            if (goal.getX() >= node.point.getX()) {
+                good = node.right;
+                bad = node.left;
+            }
+            badPossible = Math.abs(node.point.getX() - goal.getX()) < Math.sqrt(Point.distance(best.point, goal));
+        } else {
+            if (goal.getY() >= node.point.getY()) {
+                good = node.right;
+                bad = node.left;
+            }
+            badPossible = Math.abs(node.point.getY() - goal.getY()) < Math.sqrt(Point.distance(best.point, goal));
+        }
+
+        best = nearestNaive(good, goal, best);
+        if (badPossible)
+            best = nearestNaive(bad, goal, best);
+
+        return best;
+    }
+
     public static void main(String[] args) {
-        Point p1 = new Point(2, 3);
-        Point p2 = new Point(4, 2);
-        Point p3 = new Point(4, 5);
-        Point p4 = new Point(4, 2);
-        Point p5 = new Point(3, 3);
-        Point p6 = new Point(1, 5);
-        Point p7 = new Point(4, 4);
 
-        KDTree kd = new KDTree(List.of(p1, p2, p3, p4, p5, p6, p7));
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < 5000; i++) {
+            points.add(new Point(StdRandom.uniform() * 100, StdRandom.uniform() * 100));
+        }
+        KDTree root = new KDTree(points);
 
-        Point ret = kd.nearest(0.0, 7.0); // returns p2
+        Stopwatch time = new Stopwatch();
 
-        System.out.println(ret.toString());
+        for (int i = 1; i <= 100000; i++) {
+            double x = StdRandom.uniform() * 100;
+            double y = StdRandom.uniform() * 100;
+            Point na1 = root.nearest(x, y);
+        }
+
+        System.out.println(time.elapsedTime());
     }
 }
