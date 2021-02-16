@@ -73,7 +73,7 @@ public class KDTree implements PointSet {
             best = node;
 
         Node good = node.left, bad = node.right;
-        boolean badPossible = true;
+        boolean badPossible;
         if (node.depth % 2 == 0) {
             if (goal.getX() >= node.point.getX()) {
                 good = node.right;
@@ -88,9 +88,9 @@ public class KDTree implements PointSet {
             badPossible = Math.abs(node.point.getY() - goal.getY()) < Math.sqrt(Point.distance(best.point, goal));
         }
 
-        best = nearestNaive(good, goal, best);
+        best = nearest(good, goal, best);
         if (badPossible)
-            best = nearestNaive(bad, goal, best);
+            best = nearest(bad, goal, best);
 
         return best;
     }
@@ -98,14 +98,14 @@ public class KDTree implements PointSet {
     public static void main(String[] args) {
 
         List<Point> points = new ArrayList<>();
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             points.add(new Point(StdRandom.uniform() * 100, StdRandom.uniform() * 100));
         }
         KDTree root = new KDTree(points);
 
         Stopwatch time = new Stopwatch();
 
-        for (int i = 1; i <= 100000; i++) {
+        for (int i = 1; i <= 1000000; i++) {
             double x = StdRandom.uniform() * 100;
             double y = StdRandom.uniform() * 100;
             Point na1 = root.nearest(x, y);

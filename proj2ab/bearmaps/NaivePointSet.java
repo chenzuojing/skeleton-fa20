@@ -30,14 +30,14 @@ public class NaivePointSet implements PointSet {
 
     public static void main(String[] args) {
         List<Point> points = new ArrayList<>();
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 1000; i++) {
             points.add(new Point(StdRandom.uniform() * 100, StdRandom.uniform() * 100));
         }
         NaivePointSet nn = new NaivePointSet(points);
 
         Stopwatch time = new Stopwatch();
 
-        for (int i = 1; i <= 100000; i++) {
+        for (int i = 1; i <= 1000000; i++) {
             double x = StdRandom.uniform() * 100;
             double y = StdRandom.uniform() * 100;
             Point na1 = nn.nearest(x, y);
