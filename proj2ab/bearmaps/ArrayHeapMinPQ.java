@@ -4,78 +4,102 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.Stopwatch;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 
-/**
- * A very basic implementation of the ExtrinsicMinPQ.
- * Operations have very poor performance, but it's at least
- * correct, with one exception: The add method
- * should throw an exception if the item already exists,
- * but doing so makes the add method painfully slow to the
- * point where this class is very difficult to use for testing.
- *
- * @author Matt Owen @since 03-11-19
- */
-public class NaiveMinPQ<T> implements ExtrinsicMinPQ<T> {
-
+public class ArrayHeapMinPQ<T> implements ExtrinsicMinPQ<T> {
     private ArrayList<PriorityNode> items;
+    private int size;
+    HashMap<T, Integer> map = new HashMap<>();
 
-    public NaiveMinPQ() {
+    public ArrayHeapMinPQ() {
         items = new ArrayList<>();
+        items.add(new PriorityNode(null, 0));
     }
 
-    /**
-     * Note this method does not throw the proper exception,
-     * otherwise it is painfully slow (linear time).
-     */
     @Override
     public void add(T item, double priority) {
+        if (map.containsKey(item))
+            throw new IllegalArgumentException();
+        size++;
+        map.put(item, size);
         items.add(new PriorityNode(item, priority));
+        swim(size);
     }
 
     @Override
     public boolean contains(T item) {
-        return items.contains(new PriorityNode(item, 0));
+        return map.containsKey(item);
     }
+
 
     @Override
     public T getSmallest() {
-        if (size() == 0) {
-            throw new NoSuchElementException("PQ is empty");
-        }
-        return Collections.min(items).getItem();
+        if (size == 0)
+            throw new NoSuchElementException();
+        return items.get(1).getItem();
     }
 
     @Override
     public T removeSmallest() {
-        if (size() == 0) {
-            throw new NoSuchElementException("PQ is empty");
-        }
-        int minInd = indOf(getSmallest());
-        return items.remove(minInd).getItem();
+        if (size == 0)
+            throw new NoSuchElementException();
+        T min = getSmallest();
+        map.remove(min);
+        swap(1, size);
+        items.remove(size);
+        size--;
+        sink(1);
+        return min;
+    }
+
+    @Override
+    public int size() {
+        return size;
     }
 
     @Override
     public void changePriority(T item, double priority) {
-        if (contains(item) == false) {
-            throw new NoSuchElementException("PQ does not contain " + item);
+        if (!map.containsKey(item))
+            throw new NoSuchElementException();
+        int index = map.get(item);
+        items.get(index).setPriority(priority);
+        swim(index);
+        sink(index);
+    }
+
+    private void swim(int k) {
+        if (k == 1) return;
+        int parent = k / 2;
+        if (greater(parent, k)) {
+            swap(k, parent);
+            swim(parent);
         }
-        items.get(indOf(item)).setPriority(priority);
     }
 
-    /* Returns the number of items in the PQ. */
-    @Override
-    public int size() {
-        return items.size();
+    private void sink(int k) {
+        while (2 * k <= size) {
+            int j = 2 * k;
+            if (j < size && greater(j, j + 1)) j++;
+            if (!greater(k, j)) break;
+            swap(k, j);
+            k = j;
+        }
     }
 
-    private int indOf(T elem) {
-        return items.indexOf(new PriorityNode(elem, 0));
+    private void swap(int p, int q) {
+        PriorityNode tmp = items.get(p);
+        items.set(p, items.get(q));
+        map.put(items.get(q).getItem(), p);
+        items.set(q, tmp);
+        map.put(tmp.getItem(), q);
     }
 
+    private boolean greater(int p, int q) {
+        return items.get(p).compareTo(items.get(q)) > 0;
+    }
 
-    //////////////////////////
+    ////////////////
 
     private class PriorityNode implements Comparable<PriorityNode> {
         private T item;
@@ -122,20 +146,22 @@ public class NaiveMinPQ<T> implements ExtrinsicMinPQ<T> {
         }
     }
 
+
     public static void main(String[] args) {
-        NaiveMinPQ<Integer> npq = new NaiveMinPQ<>();
+        ArrayHeapMinPQ<Integer> pq = new ArrayHeapMinPQ<>();
         for (int i = 0; i < 1000000; i++) {
             double rand = StdRandom.uniform() * 10;
-            npq.add(i, rand);
+            pq.add(i, rand);
         }
 
         Stopwatch sw = new Stopwatch();
         for (int i = 0; i < 1000; i++) {
-            //int j = StdRandom.uniform(0, 100);
-            //double rand = StdRandom.uniform() * 10;
-            //npq.changePriority(j, rand);
-            npq.contains(i);
+//            int j = StdRandom.uniform(0, 100);
+//            double rand = StdRandom.uniform() * 10;
+//            pq.changePriority(j, rand);
+            pq.contains(i);
         }
         System.out.println("Total time elapsed: " + sw.elapsedTime() + " seconds.");
+
     }
 }
