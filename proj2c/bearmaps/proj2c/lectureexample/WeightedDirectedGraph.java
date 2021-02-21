@@ -14,6 +14,7 @@ public class WeightedDirectedGraph implements AStarGraph<Integer> {
     /* Represents the list of edges from a single vertex. */
     private class EdgeList {
         private List<WeightedEdge<Integer>> list;
+
         private EdgeList() {
             list = new ArrayList<>();
         }
@@ -52,5 +53,6 @@ public class WeightedDirectedGraph implements AStarGraph<Integer> {
         WeightedEdge<Integer> e = new WeightedEdge<>(p, q, w);
         adj[p].list.add(e);
     }
+
 
 }

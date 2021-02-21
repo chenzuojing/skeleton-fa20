@@ -124,17 +124,17 @@ public class NaiveMinPQ<T> implements ExtrinsicMinPQ<T> {
 
     public static void main(String[] args) {
         NaiveMinPQ<Integer> npq = new NaiveMinPQ<>();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 250000; i++) {
             double rand = StdRandom.uniform() * 10;
             npq.add(i, rand);
         }
 
         Stopwatch sw = new Stopwatch();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 250000; i++) {
             //int j = StdRandom.uniform(0, 100);
             //double rand = StdRandom.uniform() * 10;
             //npq.changePriority(j, rand);
-            npq.contains(i);
+            npq.removeSmallest();
         }
         System.out.println("Total time elapsed: " + sw.elapsedTime() + " seconds.");
     }
