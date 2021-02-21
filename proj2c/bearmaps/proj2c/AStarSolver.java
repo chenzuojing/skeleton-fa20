@@ -11,7 +11,6 @@ import java.util.Map;
 public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
     private SolverOutcome outcome;
     private double solutionWeight;
-    private List<Vertex> solution;
     private double timeSpent;
     private int numStates;
     private Vertex start, end;
@@ -20,7 +19,6 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
 
     public AStarSolver(AStarGraph<Vertex> input, Vertex start, Vertex end, double timeout) {
         Stopwatch sw = new Stopwatch();
-        solution = new ArrayList<>();
         this.start = start;
         this.end = end;
 
@@ -35,7 +33,6 @@ public class AStarSolver<Vertex> implements ShortestPathsSolver<Vertex> {
                 return;
             }
             Vertex x = pq.removeSmallest();
-            //solution.add(x);
             numStates++;
             if (x.equals(end)) {
                 outcome = SolverOutcome.SOLVED;
