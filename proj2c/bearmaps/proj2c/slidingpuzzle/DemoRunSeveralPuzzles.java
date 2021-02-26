@@ -1,6 +1,6 @@
 package bearmaps.proj2c.slidingpuzzle;
 
-import bearmaps.proj2c.LazySolver;
+import bearmaps.proj2c.AStarSolver;
 import bearmaps.proj2c.ShortestPathsSolver;
 import bearmaps.proj2c.SolutionPrinter;
 
@@ -12,17 +12,17 @@ import bearmaps.proj2c.SolutionPrinter;
  */
 public class DemoRunSeveralPuzzles {
     private static String[] basicPuzzles = {"BasicPuzzle1.txt", "BasicPuzzle2.txt",
-        "BasicPuzzle3.txt", "BasicPuzzle4.txt"};
+            "BasicPuzzle3.txt", "BasicPuzzle4.txt"};
 
     private static String[] hardPuzzles = {"HardPuzzle1.txt", "HardPuzzle2.txt",
-        "HardPuzzle3.txt"};
+            "HardPuzzle3.txt"};
 
     private static String[] elitePuzzles = {"ElitePuzzle1.txt", "ElitePuzzle2.txt",
-        "ElitePuzzle3.txt"};
+            "ElitePuzzle3.txt"};
 
     public static void main(String[] args) {
 
-        String[] puzzleFiles = hardPuzzles;
+        String[] puzzleFiles = elitePuzzles;
 
         System.out.println(puzzleFiles.length + " puzzle files being run.");
         for (int i = 0; i < puzzleFiles.length; i += 1) {
@@ -32,7 +32,7 @@ public class DemoRunSeveralPuzzles {
 
             BoardGraph spg = new BoardGraph();
             System.out.println(puzzleFiles[i] + ":");
-            ShortestPathsSolver<Board> solver = new LazySolver<>(spg, start, goal, 30);
+            ShortestPathsSolver<Board> solver = new AStarSolver<>(spg, start, goal, 30);
             SolutionPrinter.summarizeOutcome(solver);
         }
 
